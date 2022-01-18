@@ -17,8 +17,8 @@ export default function Home({ allPostsData }) {
           developer{" "}
         </p>
         <h2>
-          <Link href="/posts/first-post">
-            <a className={utilStyles.colorInherit}>visite my first post</a>
+          <Link href="/contacts">
+            <a className={utilStyles.colorInherit}>visite contacts api page</a>
           </Link>
         </h2>
         <p>
