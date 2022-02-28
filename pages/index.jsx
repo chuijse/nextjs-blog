@@ -3,11 +3,18 @@ import Layout, { siteTitle } from "../components/layout";
 import utilStyles from "../styles/utils.module.css";
 import Link from "next/link";
 import Date from "../components/date";
-import { getSortedPostsData } from "../lib/posts";
 
-export default function Home({ allPostsData }) {
+
+// pages/index.tsx
+import prisma from '../lib/prisma';
+
+
+
+export default function Home({feed}) {
+
+  console.log(feed)
   return (
-    <Layout home>
+    <Layout >
       <Head>
         <title>{siteTitle}</title>
       </Head>
@@ -16,28 +23,20 @@ export default function Home({ allPostsData }) {
           Hello, Im <b>Cristian Huijse</b> a Industrial designer and Front-end
           developer{" "}
         </p>
-        <h2>
-          <Link href="/contacts">
-            <a className={utilStyles.colorInherit}>visite contacts api page</a>
-          </Link>
-        </h2>
-        <p>
-          (This is a sample website - you’ll be building a site like this on{" "}
-          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
-        </p>
+        
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
         <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>
-                <a>{title}</a>
+          {feed.map(( f, i) => (
+            <li className={utilStyles.listItem} key={f.id}>
+              <Link href={`/posts/${f.id}`}>
+                <a>{f.title}</a>
               </Link>
               <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
+              <small>Author Name: <b>{f.author?.name}</b> </small>
+               <br />
+              <small>Email: {f.author?.email}</small>
             </li>
           ))}
         </ul>
@@ -47,10 +46,26 @@ export default function Home({ allPostsData }) {
 }
 
 export async function getStaticProps() {
+  const feed = await prisma.post.findMany({
+    where: { published: true },
+    include:{
+      author: {
+        select:{
+          name: true,
+          email: true
+        } 
+      }
+    },
+  });
+  return { props: {feed}  };
+  
+};
+
+/*export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
   return {
     props: {
       allPostsData,
     },
   };
-}
+}*/

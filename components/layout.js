@@ -2,12 +2,14 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "./layout.module.css";
 import utilStyles from "../styles/utils.module.css";
+import { signOut, useSession } from "next-auth/react";
+//import { useRouter } from "next/router";
+import React from "react";
 import Link from "next/link";
 
-const name = "chuijse";
 export const siteTitle = " cHuijse Next.js Sample Website";
 
-export default function Layout({ children, home }) {
+export default function Layout({ children }) {
   return (
     <div className={styles.container}>
       <Head>
@@ -25,49 +27,58 @@ export default function Layout({ children, home }) {
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <header className={styles.header}>
-        {home ? (
-          <>
-            <Image
-              priority
-              src="/images/profile.jpg"
-              className={utilStyles.borderCircle}
-              height={144}
-              width={144}
-              alt={name}
-            />
-            <h1 className={utilStyles.heading2Xl}>{name}</h1>
-          </>
-        ) : (
-          <>
-            <Link href="/">
-              <a>
-                <Image
-                  priority
-                  src="/images/profile.jpg"
-                  className={utilStyles.borderCircle}
-                  height={108}
-                  width={108}
-                  alt={name}
-                />
-              </a>
-            </Link>
-            <h2 className={utilStyles.headingLg}>
-              <Link href="/">
-                <a className={utilStyles.colorInherit}>{name}</a>
-              </Link>
-            </h2>
-          </>
-        )}
-      </header>
-      <main>{children}</main>
-      {!home && (
-        <div className={styles.backToHome}>
+      <nav>
+        <div className="left">
           <Link href="/">
-            <a>← Back to home</a>
+            <a className="bold">Feed</a>
+          </Link>
+          <Link href="/drafts">
+            <a>My drafts</a>
           </Link>
         </div>
-      )}
+        <div className="right">
+          <p></p>
+          <Link href="/create">
+            <button>
+              <a>New post</a>
+            </button>
+          </Link>
+          <button onClick={() => signOut()}>
+            <a>Log out</a>
+          </button>
+        </div>
+      </nav>
+      <main>{children}</main>
     </div>
   );
 }
+
+/*{!home && (
+  <div className={styles.backToHome}>
+    <Link href="/">
+      <a>← Back to home</a>
+    </Link>
+  </div>
+)}*/
+
+/*<nav>
+        <div className="left">
+          <Link href="/">
+            <a className="bold">Feed</a>
+          </Link>
+          <Link href="/drafts">
+            <a>My drafts</a>
+          </Link>
+        </div>
+        <div className="right">
+          <p></p>
+          <Link href="/create">
+            <button>
+              <a>New post</a>
+            </button>
+          </Link>
+          <button onClick={() => signOut()}>
+            <a>Log out</a>
+  </button>
+        </div>
+      </nav>*/
